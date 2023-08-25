@@ -1,7 +1,7 @@
 import cv2
 
-def create_video_from_frames(frame_paths, output_video_path, fps=10):
 
+def create_video_from_frames(frame_paths, output_video_path, fps=10):
     try:
         frame_size = None
         out = None
@@ -28,5 +28,6 @@ def create_video_from_frames(frame_paths, output_video_path, fps=10):
 
         return True, output_video_path
 
-    except:
+    except Exception as e:
+        print(e)
         return False, None
