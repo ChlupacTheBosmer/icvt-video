@@ -23,15 +23,19 @@ import os
 
 class Video_file():
 
-    def __init__(self, filepath, root = None, ocr_roi: tuple = (0, 0, 500, 60), initiate_start_and_end_times: bool = True):
+    def __init__(self, filepath, root = None, ocr_roi: tuple = (0, 0, 500, 60),
+                 initiate_start_and_end_times: bool = True):
 
         # Define logger
         self.logger = utils.log_define()
 
         # Define variables
         self.filepath = filepath
+        self.filename = os.path.basename(self.filepath)
         self.main_window = root
         self.ocr_roi = ocr_roi
+        (self.recording_identifier, self.timestamp, self.recording_details,
+         time_details, self.file_extension) = self.get_data_from_recording_name()
 
         # Determine video origin
         if filepath.endswith(".mp4"):
@@ -377,7 +381,6 @@ class Video_file():
         return frame_width, frame_height
 
 
-
     def get_video_fps(self):
 
         try:
@@ -440,3 +443,17 @@ class Video_file():
         duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
 
         return duration
+
+    def get_data_from_recording_name(self):
+
+        filename = os.path.basename(self.filepath)
+
+        # Prepare name elements
+        locality, transect, plant_id, date, hour, minutes = filename[:-4].split("_")
+        file_extension = filename[-4:]
+
+        # Define compound info
+        recording_identifier = "_".join([locality, transect, plant_id])
+        timestamp = "_".join([date, hour, minutes])
+
+        return recording_identifier, timestamp, [locality, transect, plant_id], [date, hour, minutes], file_extension
