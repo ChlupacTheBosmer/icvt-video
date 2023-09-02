@@ -13,7 +13,7 @@ from PIL import Image, ImageTk
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 # Modules of ICVT
-from video_passive import VideoFilePassive
+from ..video.video_passive import VideoFilePassive
 from ..vision import vision_AI
 
 
@@ -50,7 +50,7 @@ class VideoFileInteractive(VideoFilePassive):
 
             # Get the time in seconds manually
             # frame = self.get_video_frame("start")
-            _, frame = self.read_video_frame(24)
+            frame = self.read_video_frame(24, False)[0][3]
 
             success, extracted_time = vision_AI.get_text_with_OCR(frame)
             if not success:
@@ -79,7 +79,7 @@ class VideoFileInteractive(VideoFilePassive):
         if not success:
             # Get the time in seconds manually
             # frame = self.get_video_frame("end")
-            _, frame = self.read_video_frame(self.total_frames - 10)
+            frame = self.read_video_frame(self.total_frames - 10, False)[0][3]
 
             success, extracted_time = vision_AI.get_text_with_OCR(frame)
             if not success:

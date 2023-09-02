@@ -12,6 +12,7 @@ from hachoir.parser import createParser
 from ..utility import utils
 from decord import VideoReader
 from decord import cpu, gpu
+from typing import Union, List, Generator
 
 
 class VideoFilePassive:
@@ -134,16 +135,25 @@ class VideoFilePassive:
 
         return duration
 
-    def read_video_frames(self, frame_indices: list = 0):
+    def read_video_frame(self, frame_indices: Union[List[int], int] = 0, stream: bool = True) -> Union[List, Generator]:
 
         # Process the argument
         frame_indices = [frame_indices] if not isinstance(frame_indices, list) else frame_indices
 
-        # Based on the video origin choose the appropriate reader
-        if self.video_origin == "MS":
-            yield from self.read_frames_imageio(frame_indices)
+        # Based on the video origin, choose the appropriate reader
+        chosen_reader = self.read_frames_imageio if self.video_origin == "MS" else self.read_frames_opencv2
+
+        if stream:
+            return (frame for frame in chosen_reader(frame_indices))  # This returns a generator
         else:
-            yield from self.read_frames_opencv2(frame_indices)
+            return list(chosen_reader(frame_indices))  # This returns a list
+
+    # def frame_reader_wrapper(self, frame_reader_func, frame_indices: Union[List[int], int] = 0, stream: bool = True):
+    #     if stream:
+    #         yield from frame_reader_func(frame_indices)
+    #     else:
+    #         frames = list(frame_reader_func(frame_indices))
+    #         return frames
 
     def read_frames_opencv2(self, frame_indices):
 
@@ -180,7 +190,6 @@ class VideoFilePassive:
 
         # load the VideoReader
         vr = VideoReader(self.filepath, ctx=cpu(0))  # can set to cpu or gpu .. ctx=gpu(0)
-
         for frame_number in frame_indices:
             frame = vr[frame_number]  # read an image from the capture
             yield (self.recording_identifier, self.timestamp, frame_number, frame.asnumpy(), self.rois)
