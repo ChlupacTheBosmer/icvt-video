@@ -16,7 +16,6 @@ from hachoir.parser import createParser
 from ..video.video_passive import VideoFilePassive
 from ..vision import vision_AI
 
-
 class VideoFileInteractive(VideoFilePassive):
     __slots__ = ('end_time', 'main_window', 'manual_text_input_window', 'ocr_roi', 'start_time')
 

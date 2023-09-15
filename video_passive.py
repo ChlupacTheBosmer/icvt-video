@@ -14,7 +14,6 @@ from decord import VideoReader
 from decord import cpu, gpu
 from typing import Union, List, Generator
 
-
 class VideoFilePassive:
     __slots__ = ('file_extension', 'filename', 'filepath', 'fps', 'logger', 'recording_details', 'recording_identifier', 'rois', 'timestamp', 'total_frames', 'video_origin')
 
