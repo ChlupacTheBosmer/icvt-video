@@ -2,7 +2,7 @@
 #
 # Modules of ICVT
 from ..utility import utils
-from ..vision import vision_AI
+#from ..vision import vision_AI Is importen in local space
 
 # Other modules
 import pandas as pd
@@ -13,8 +13,6 @@ from hachoir.parser import createParser
 import imageio
 
 # Default python modules
-import tkinter as tk
-from tkinter import simpledialog
 import datetime
 from datetime import datetime
 from datetime import timedelta
@@ -71,6 +69,8 @@ class Video_file():
         # If failed to get time from metadata obtain it manually
         if not success:
 
+            from ..vision import vision_AI
+
             # Get the time in seconds manually
             # frame = self.get_video_frame("start")
             _ , frame = self.read_video_frame(24)
@@ -100,6 +100,8 @@ class Video_file():
 
         # If failed to get time from metadata obtain it manually
         if not success:
+            from ..vision import vision_AI
+
             # Get the time in seconds manually
             # frame = self.get_video_frame("end")
             _, frame = self.read_video_frame(self.total_frames - 10)
@@ -161,6 +163,8 @@ class Video_file():
         return return_time, success
 
     def get_text_manually(self, frame):
+
+        import tkinter as tk
 
         def submit_time(input_field):
             self.logger.debug(f'Running function submit_time({input_field})')
@@ -432,6 +436,7 @@ class Video_file():
             metadata = extractMetadata(parser)
             duration = str(metadata.get("duration"))
         except Exception as e:
+            from tkinter import simpledialog
             self.logger.warning(f'Unable to read video duration from video: {self.filepath}. Exception: {e}')
             duration = simpledialog.askstring(f"Unable to read video duration from video: {self.filepath}", "Enter duration time (hh:mm:ss):")
 
