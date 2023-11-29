@@ -8,7 +8,6 @@ from datetime import datetime
 import cv2
 # Other modules
 import pandas as pd
-from PIL import Image, ImageTk
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 # Modules of ICVT
@@ -139,6 +138,7 @@ class VideoFileInteractive(VideoFilePassive):
     def get_time_manually(self, frame):
 
         import tkinter as tk
+        from PIL import Image, ImageTk
 
         def submit_time(manual_input_value):
             self.logger.debug(f'Running function submit_time({manual_input_value})')
