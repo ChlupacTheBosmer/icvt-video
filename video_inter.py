@@ -4,7 +4,6 @@
 import datetime
 import os
 import time
-import tkinter as tk
 from datetime import datetime
 import cv2
 # Other modules
@@ -14,7 +13,7 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 # Modules of ICVT
 from ..video.video_passive import VideoFilePassive
-from ..vision import vision_AI
+#from ..vision import vision_AI --- Imported in a local space
 
 class VideoFileInteractive(VideoFilePassive):
     __slots__ = ('end_time', 'main_window', 'manual_text_input_window', 'ocr_roi', 'start_time')
@@ -46,7 +45,7 @@ class VideoFileInteractive(VideoFilePassive):
 
         # If failed to get time from metadata obtain it manually
         if not success:
-
+            from ..vision import vision_AI
             # Get the time in seconds manually
             # frame = self.get_video_frame("start")
             frame = self.read_video_frame(24, False)[0][3]
@@ -76,6 +75,7 @@ class VideoFileInteractive(VideoFilePassive):
 
         # If failed to get time from metadata obtain it manually
         if not success:
+            from ..vision import vision_AI
             # Get the time in seconds manually
             # frame = self.get_video_frame("end")
             frame = self.read_video_frame(self.total_frames - 10, False)[0][3]
@@ -137,6 +137,8 @@ class VideoFileInteractive(VideoFilePassive):
         return return_time, success
 
     def get_time_manually(self, frame):
+
+        import tkinter as tk
 
         def submit_time(manual_input_value):
             self.logger.debug(f'Running function submit_time({manual_input_value})')
