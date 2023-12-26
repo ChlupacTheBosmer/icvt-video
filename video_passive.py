@@ -159,41 +159,53 @@ class VideoFilePassive:
         # Initiate the VideoCapture
         cap = cv2.VideoCapture(self.filepath)
 
-        for frame_number in frame_indices:
+        try:
+            for frame_number in frame_indices:
 
-            # Set cap position and read frame
-            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
-            success, frame = cap.read()
+                # Set cap position and read frame
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+                success, frame = cap.read()
 
-            if success:
-                yield (self.recording_identifier, self.timestamp, frame_number, frame, self.rois)
-
-        cap.release()
+                if success:
+                    yield (self.recording_identifier, self.timestamp, frame_number, frame, self.rois)
+        except Exception as e:
+            pass
+        finally:
+            if cap:
+                cap.release()
 
     def read_frames_imageio(self, frame_indices):
-        try:
-            # Open the video file using imageio
-            video = imageio.get_reader(self.filepath)
 
+        # Open the video file using imageio
+        video = imageio.get_reader(self.filepath)
+
+        try:
             for frame_number in frame_indices:
                 # Read the frame
                 frame = video.get_data(frame_number)
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
                 yield (self.recording_identifier, self.timestamp, frame_number, frame, self.rois)
-            del video
         except IndexError:
             yield from self.read_frames_opencv2(self, frame_indices)
+        finally:
+            if video:
+                del video
 
     def read_frames_decord(self, frame_indices):
 
-        # load the VideoReader
         vr = VideoReader(self.filepath, ctx=cpu(0))  # can set to cpu or gpu .. ctx=gpu(0)
-        for frame_number in frame_indices:
-            frame = vr[frame_number]  # read an image from the capture
-            yield (self.recording_identifier, self.timestamp, frame_number, frame.asnumpy(), self.rois)
 
-        del vr
+        # load the VideoReader
+        try:
+            for frame_number in frame_indices:
+                frame = vr[frame_number]  # read an image from the capture
+                yield (self.recording_identifier, self.timestamp, frame_number, frame.asnumpy(), self.rois)
+        except Exception as e:
+            pass
+        finally:
+            if vr:
+                del vr
 
     def get_frame_shape(self):
 
