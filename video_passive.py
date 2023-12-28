@@ -134,13 +134,14 @@ class VideoFilePassive:
 
         return duration
 
-    def read_video_frame(self, frame_indices: Union[List[int], int] = 0, stream: bool = True) -> Union[List, Generator]:
+    def read_video_frame(self, frame_indices: Union[List[int], int] = 0, stream: bool = True, prioritize: str = 'opencv') -> Union[List, Generator]:
 
         # Process the argument
         frame_indices = [frame_indices] if not isinstance(frame_indices, list) else frame_indices
 
-        # Based on the video origin, choose the appropriate reader
-        chosen_reader = self.read_frames_imageio if self.video_origin == "MS" else self.read_frames_opencv2
+        # Based on the video origin, choose the appropriate reader. The "prioritize" arg sets default reader
+        prioritized_reader = self.read_frames_opencv2 if prioritize == 'opencv' else self.read_frames_decord
+        chosen_reader = self.read_frames_imageio if self.video_origin == "MS" else prioritized_reader
 
         if stream:
             return (frame for frame in chosen_reader(frame_indices))  # This returns a generator
