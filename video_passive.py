@@ -12,7 +12,7 @@ from hachoir.parser import createParser
 from ..utility import utils
 from decord import VideoReader
 from decord import cpu, gpu
-from typing import Union, List, Generator
+from typing import Union, List, Generator, Tuple
 
 class VideoFilePassive:
     __slots__ = ('file_extension', 'filename', 'filepath', 'fps', 'logger', 'recording_details', 'recording_identifier', 'rois', 'timestamp', 'total_frames', 'video_origin')
@@ -134,7 +134,7 @@ class VideoFilePassive:
 
         return duration
 
-    def read_video_frame(self, frame_indices: Union[List[int], int] = 0, stream: bool = True, prioritize: str = 'opencv') -> Union[List, Generator]:
+    def read_video_frame(self, frame_indices: Union[List[int], Tuple[int, ...], int] = 0, stream: bool = True, prioritize: str = 'opencv') -> Union[List, Generator]:
 
         # Process the argument
         frame_indices = [frame_indices] if not isinstance(frame_indices, list) else frame_indices
