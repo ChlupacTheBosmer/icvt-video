@@ -137,7 +137,7 @@ class VideoFilePassive:
     def read_video_frame(self, frame_indices: Union[List[int], Tuple[int, ...], int] = 0, stream: bool = True, prioritize: str = 'opencv') -> Union[List, Generator]:
 
         # Process the argument
-        frame_indices = [frame_indices] if not isinstance(frame_indices, list) else frame_indices
+        frame_indices = [frame_indices] if not isinstance(frame_indices, (list, tuple)) else frame_indices
 
         # Based on the video origin, choose the appropriate reader. The "prioritize" arg sets default reader
         prioritized_reader = self.read_frames_opencv2 if prioritize == 'opencv' else self.read_frames_decord
